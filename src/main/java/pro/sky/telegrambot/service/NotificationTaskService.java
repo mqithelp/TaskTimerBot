@@ -1,5 +1,8 @@
 package pro.sky.telegrambot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.SendMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import pro.sky.telegrambot.Entity.NotificationTask;
 import pro.sky.telegrambot.dto.ParseReminderMessage;
@@ -13,9 +16,11 @@ import java.util.List;
 @Service
 public class NotificationTaskService {
     private final NotificationTaskRepository repository;
+    private final TelegramBot telegramBot;
 
-    public NotificationTaskService(NotificationTaskRepository notificationTaskRepository) {
+    public NotificationTaskService(NotificationTaskRepository notificationTaskRepository, TelegramBot telegramBot) {
         this.repository = notificationTaskRepository;
+        this.telegramBot = telegramBot;
     }
 
     public void creteReminder(ParseReminderMessage parsed, String chatId) {
@@ -36,9 +41,11 @@ public class NotificationTaskService {
         LocalDateTime oneMinuteAgo = now.minusMinutes(1);
         System.out.println("ReminderBySheduler started: " + LocalDateTime.now());
         List<NotificationTask> tasks =  repository.findByReminderTimeBetween(oneMinuteAgo,now);
-        tasks.forEach(task -> {
-            System.out.println(task.getReminderTime() + ": " + task.getMessageText());
-        });
+        for (NotificationTask task : tasks) {
+            SendMessage sendMessage = new SendMessage(task.getChatId().toString(),"✅ Напоминаю!\n"+task.getMessageText());
+            telegramBot.execute(sendMessage);
+            System.out.println(task.getChatId().toString() + " - " + task.getReminderTime() + ": " + task.getMessageText());
+        }
 
     }
 
