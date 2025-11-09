@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface NotificationTaskRepository extends JpaRepository<NotificationTask, Long> {
 
-    List<NotificationTask> findByReminderTimeLessThanEqual(LocalDateTime dateTime);
-    List<NotificationTask> findByReminderTimeEquals(LocalDateTime dateTime);
     List<NotificationTask> findByReminderTimeBetween(LocalDateTime dateTime, LocalDateTime dateTime2);
 }
 
