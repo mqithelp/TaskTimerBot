@@ -2,7 +2,6 @@ package pro.sky.telegrambot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import pro.sky.telegrambot.Entity.NotificationTask;
 import pro.sky.telegrambot.dto.ParseReminderMessage;
@@ -44,7 +43,6 @@ public class NotificationTaskService {
         for (NotificationTask task : tasks) {
             SendMessage sendMessage = new SendMessage(task.getChatId().toString(),"✅ Напоминаю!\n"+task.getMessageText());
             telegramBot.execute(sendMessage);
-            System.out.println(task.getChatId().toString() + " - " + task.getReminderTime() + ": " + task.getMessageText());
         }
 
     }
